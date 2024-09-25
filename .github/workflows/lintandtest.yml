@@ -1,0 +1,32 @@
+name: Lint & Test
+on: [ push ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+      - name: Install dependencies
+        run: |
+          poetry install --with dev
+          echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
+
+      - name: Tests
+        run: |
+          poetry run pytest --junitxml=junit/test-results.xml
+
+      - name: Run Ruff
+        run: |
+          poetry run ruff format --check .
+          poetry run ruff check --output-format=github .
+
+      - uses: jakebailey/pyright-action@v1

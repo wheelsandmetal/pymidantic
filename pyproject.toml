@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "pymidantic"
+version = "0.1.0"
+description = ""
+authors = ["wheelsandmetal"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.8.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.6"
+pytest = "^8.3.2"
+pyright = "^1.1.374"
+mypy = "^1.11.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["pymidantic", "tests"]
+strict = ["pymidantic"]
+
+[tool.ruff]
+lint.select = [
+    "F",     # pyflake
+    "E",     # error pycodestyle
+    "W",     # warning pycodestyle
+    "I",     # isort
+    "N",     # pep-8 naming
+    "UP",    # pyupgrade
+    "C90",   # complexity checking
+]
+line-length = 120
+
