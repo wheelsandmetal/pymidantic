@@ -1,0 +1,36 @@
+name: Build and publish python package
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: 'poetry'
+
+      - name: Build dist
+        run: |
+          poetry build
+
+      - name: Mint token
+        id: mint
+        uses: tschm/token-mint-action@v1.0.3
+
+      - name: Publish the package with poetry
+        run: |
+          poetry publish -u __token__ -p '${{ steps.mint.outputs.api-token }}'
